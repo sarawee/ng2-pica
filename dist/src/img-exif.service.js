@@ -1,20 +1,14 @@
 import { Injectable } from '@angular/core';
 import * as exifr from 'exifr';
-
-@Injectable()
-export class ImgExifService {
-    public getOrientedImage(image:HTMLImageElement):Promise<HTMLImageElement> {
-        return new Promise<HTMLImageElement>(resolve => {
-            let img:any;
-			exifr.orientation(image).then(orientation => {
+var ImgExifService = /** @class */ (function () {
+    function ImgExifService() {
+    }
+    ImgExifService.prototype.getOrientedImage = function (image) {
+        return new Promise(function (resolve) {
+            var img;
+            exifr.orientation(image).then(function (orientation) {
                 if (orientation != 1) {
-                    let canvas:HTMLCanvasElement = document.createElement("canvas"),
-                        ctx:CanvasRenderingContext2D = <CanvasRenderingContext2D> canvas.getContext("2d"),
-                        cw:number = image.width,
-                        ch:number = image.height,
-                        cx:number = 0,
-                        cy:number = 0,
-                        deg:number = 0;
+                    var canvas = document.createElement("canvas"), ctx = canvas.getContext("2d"), cw = image.width, ch = image.height, cx = 0, cy = 0, deg = 0;
                     switch (orientation) {
                         case 3:
                         case 4:
@@ -39,13 +33,12 @@ export class ImgExifService {
                         default:
                             break;
                     }
-
                     canvas.width = cw;
                     canvas.height = ch;
                     if ([2, 4, 5, 7].indexOf(orientation) > -1) {
                         //flip image
-                         ctx.translate(cw, 0);
-                         ctx.scale(-1, 1);
+                        ctx.translate(cw, 0);
+                        ctx.scale(-1, 1);
                     }
                     ctx.rotate(deg * Math.PI / 180);
                     ctx.drawImage(image, cx, cy);
@@ -56,10 +49,17 @@ export class ImgExifService {
                         resolve(img);
                     });
                     img.src = canvas.toDataURL("image/png");
-                } else {
+                }
+                else {
                     resolve(image);
                 }
             });
         });
-    }
-}
+    };
+    ImgExifService.decorators = [
+        { type: Injectable },
+    ];
+    return ImgExifService;
+}());
+export { ImgExifService };
+//# sourceMappingURL=img-exif.service.js.map
